@@ -39,7 +39,7 @@ const Cart = () => {
         <Button textOnly onClick={handleCloseCart}>
           Close
         </Button>
-        <Button>Go to Checkout</Button>
+        {cartItems.length > 0 && <Button>Go to Checkout</Button>}
       </p>
     </Modal>
   );
