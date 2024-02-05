@@ -37,7 +37,7 @@ const removeCartItem = (cartItems, itemToRemove) => {
       ...existingItem,
       quantity: existingItem.quantity - 1,
     };
-    updatedItem[existingCartItemIndex] = updatedItem;
+    updatedItems[existingCartItemIndex] = updatedItem;
   }
 
   return updatedItems;
