@@ -8,11 +8,22 @@ import { currencyFormatter } from "../utils/formating";
 import Modal from "./UI/Modal";
 import Input from "./UI/Input";
 import Button from "./UI/Button";
+import useHttp from "../custom-hooks/useHttp";
 
+const requestConfig = {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+};
 const Checkout = () => {
   const { cartItems } = useContext(CartContext);
   const { hideCheckout, progress } = useContext(UserProgressContext);
 
+  const { data, isLoading, error, sendRequest } = useHttp(
+    "http://localhost:3000/orders",
+    requestConfig
+  );
   const cartTotal = cartItems.reduce((total, item) => {
     return total + item.quantity - item.price;
   }, 0);
@@ -21,19 +32,26 @@ const Checkout = () => {
     event.preventDefault();
     const fd = new FormData(event.target);
     const customerData = Object.fromEntries(fd.entries());
-
-    fetch("http://localhost:3000/orders", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    sendRequest(
+      JSON.stringify({
         order: {
           items: cartItems,
           customer: customerData,
         },
-      }),
-    });
+      })
+    );
+    // fetch("http://localhost:3000/orders", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({
+    //     order: {
+    //       items: cartItems,
+    //       customer: customerData,
+    //     },
+    //   }),
+    // });
   };
 
   return (

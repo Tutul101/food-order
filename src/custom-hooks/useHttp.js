@@ -6,7 +6,8 @@ async function sendHttpRequest(url, config) {
   const resData = await response.json();
 
   if (!response.ok) {
-    throw new error(
+    console.log("error message", resData.message);
+    throw new Error(
       resData.message || "Something went wrong failed to send request"
     );
   }
@@ -19,13 +20,14 @@ const useHttp = (url, config, initialData) => {
   const [data, setData] = useState(initialData);
 
   const sendRequest = useCallback(
-    async function sendRequest() {
+    async function sendRequest(data) {
       setIsLoading(true);
       try {
-        const resData = await sendHttpRequest(url, config);
+        const resData = await sendHttpRequest(url, { ...config, body: data });
         setData(resData);
       } catch (error) {
-        setError("error.message" || "Something went wrong");
+        console.log("Error in custom hook", error.message);
+        setError(error.message || "Something went wrong");
       }
       setIsLoading(false);
     },
@@ -36,7 +38,7 @@ const useHttp = (url, config, initialData) => {
     if (config && config.method === "GET") {
       sendRequest();
     }
-  }, [sendRequest]);
+  }, [sendRequest, config]);
 
   return {
     data,
